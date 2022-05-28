@@ -1,0 +1,59 @@
+﻿@model IEnumerable<TaskToDo>
+@{
+    ViewData["Title"] = "TasksToDo";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-12">
+            <h1 class="text-primary text-center">Tasks To Do</h1>
+        </div>
+        <div class="col-6 text-start">
+            <form asp-action="Index" method="get">
+                <div class="form-actions no-color">
+                    <p>
+                        Find by title: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                        <input type="submit" value="Search" class="btn btn-outline-primary" /> |
+                        <a asp-action="Index">Back to Full List</a>
+                    </p>
+                </div>
+            </form>
+            <p>Sort by:
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]">@Html.DisplayNameFor(model => model.Title)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.CreatedDate)</a>
+            </p>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="TaskToDo" asp-action="Add" class="btn btn-primary">
+                <i class="bi bi-clipboard2-plus"></i> Add New Task
+            </a>
+        </div>
+    </div>
+</div>
+<div style="overflow:hidden">
+@foreach(var obj in Model)
+{
+    string color = "lightgray";
+    if (obj.Priority_id == 1)
+        color = "#FF534B";
+    else if (obj.Priority_id == 2)
+        color = "#FFA84B";
+    else if (obj.Priority_id == 3)
+        color = "#FFE681";
+    if (obj.IsCompleted)
+        color = "#A3ED7D";
+    <div id="task" style="width:300px; height:380px; border: 5px outset gray; background-color: @color; padding: 5px; margin: 10px; word-wrap: break-word; float:left">
+        <div class="btn-group" style="width:50%; height: 60px; float:left">
+            <a asp-controller="TaskToDo" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-3" style="padding:10px"><i class="bi bi-pencil-square"></i> Edit</a>
+        </div>
+        <div class="btn-group" style="width:50%; height: 60px; float:left">
+            <a asp-controller="TaskToDo" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-primary mx-3" style="padding:10px"><i class="bi bi-trash3-fill"></i> Delete</a>
+        </div>
+        <div style="width:100%; height: 320px; float:left; position: relative;">
+            <h2 class="text-primary text-center" style="margin-top:20px;">@obj.Title</h2>
+            <p style="padding:10px; padding-top:0; font-size:20px">@obj.Description</p>
+            <p style="position:absolute; bottom:10px; width:100%; text-align:center;">@obj.CreatedDate</p>
+        </div>
+    </div>
+}
+</div>
